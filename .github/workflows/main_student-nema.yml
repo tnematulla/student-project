@@ -26,14 +26,11 @@ jobs:
         run: mvn clean package -DskipTests
         working-directory: ./student
 
-      - name: Debug: list target folder
-        run: ls -l ./student/target
-
-      - name: Upload JAR artifact
+      - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: ./student/target/*.jar
+          path: ./student/target/*.jar   # <-- ye relative path correct hai
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,14 +46,11 @@ jobs:
           name: java-app
           path: deploy-artifact
 
-      - name: Debug: list deploy folder
-        run: ls -l deploy-artifact
-
       - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2A0C858875FF48FC99B3C1424A7B499C }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D509415683BA41088EF7B03356 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D509415683BA41088CA7348EF7B03356 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_087D1CE7D1B542E8A9234B7778981513 }}
 
       - name: Deploy to Azure Web App
@@ -64,4 +58,4 @@ jobs:
         with:
           app-name: student-nema
           slot-name: Production
-          package: deploy-artifact/*.jar
+          package: deploy-artifact/*.jar   # <-- ye wahi folder jaha artifact download hua
