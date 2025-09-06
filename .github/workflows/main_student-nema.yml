@@ -24,16 +24,16 @@ jobs:
 
       - name: Build with Maven (skip tests)
         run: mvn clean package -DskipTests
-        working-directory: student
+        working-directory: ./student
 
       - name: Debug: list target folder
-        run: ls -l student/target
+        run: ls -l ./student/target
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: student/target/*.jar
+          path: ./student/target/*.jar
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,6 +62,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'student-nema'
-          slot-name: 'Production'
+          app-name: student-nema
+          slot-name: Production
           package: deploy-artifact/*.jar
