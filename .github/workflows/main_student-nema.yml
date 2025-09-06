@@ -1,5 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
+# .github/workflows/azure-deploy.yml
 
 name: Build and deploy JAR app to Azure Web App - student-nema
 
@@ -16,8 +15,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Java version
         uses: actions/setup-java@v4
@@ -26,13 +24,13 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven (skip tests)
-        run: mvn clean install -DskipTests
+        run: mvn clean package -DskipTests
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/student/target/*.jar'
+          path: '${{ github.workspace }}/student/target/student-0.0.1-SNAPSHOT.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -40,13 +38,13 @@ jobs:
     permissions:
       id-token: write
       contents: read
-  
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -55,9 +53,8 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_087D1CE7D1B542E8A9234B7778981513 }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'student-nema'
           slot-name: 'Production'
-          package: '${{ github.workspace }}/student/target/*.jar'
+          package: '${{ github.workspace }}/student/target/student-0.0.1-SNAPSHOT.jar'
