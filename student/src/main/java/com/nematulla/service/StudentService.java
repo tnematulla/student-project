@@ -42,6 +42,6 @@ public class StudentService {
 
     public String deleteStudent(Long id) {
          studentRepo.deleteById(id);
-         return "Student with id: " + id + " is deleted Successfully";
+         return "Student with id: " + id + " is deleted Successfully you can create your id once you changed your mind";
     }
 }
